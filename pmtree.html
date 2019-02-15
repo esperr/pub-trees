@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>PMTree</title>
+    <!-- Bootstrap core CSS -->
+    <link href="https://getbootstrap.com/docs/4.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="pmtree.css">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
+        <!-- Custom styles for this template -->
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">PMTree</a>
+        <div class="navbar-nav ml-auto">
+          <a class="nav-item nav-link active" href="#">About PMTree</a>
+        </div>
+      </nav>
+
+<main role="main">
+  <!-- Main jumbotron for a primary marketing message or call to action -->
+  <div class="jumbotron">
+    <div class="container">
+      <h1 class="display-3">PMTree</h1>
+      <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+    </div>
+  </div>
+
+
+  <div class="container">
+    <!-- Example row of columns -->
+    <div id="mainsearch" class="row">
+      <div class="col-md-8">
+
+        <h2>Your PubMed search</h2>
+        <form class="form-inline">
+        <div class="form-group mb-2">
+          <input type="text" class="form-control" id="search">
+        </div>
+        <!--<button type="submit" class="btn btn-primary mb-2">Search</button>-->
+        <button id="runsearch" class="btn btn-primary mb-2" type="button">Search</button>
+      </form>
+
+      </div>
+
+    </div>
+
+    <hr>
+
+  </div> <!-- /container -->
+
+  <div class="container">
+    <!-- Example row of columns -->
+    <div id="chooseroot" class="row">
+      <div class="col-md-8">
+        <p>Your search returned <span id="returned"></span> PubMed results</p>
+        <p>Select one of your search terms to see it as root...</p>
+        <div id="searchwords"></div>
+          <p>or choose your own different word:</p>
+          <form class="form-inline">
+          <div class="form-group mb-2">
+            <input type="text" class="form-control" id="customword">
+          </div>
+          <button id="ownword" type="submit" class="btn btn-primary mb-2">Draw</button>
+        </form>
+
+      </div>
+
+      <div class="col-md-3">
+      <form>
+        <p>Draw your tree with how many results?</p>
+        <div>
+          <input type="radio" id="Choice1"
+           name="contact" value="50">
+          <label for="Choice1">50</label>
+
+          <input type="radio" id="Choice2"
+           name="contact" value="100" checked>
+          <label for="Choice2">100</label>
+
+          <input type="radio" id="Choice3"
+           name="contact" value="150">
+          <label for="Choice3">150</label>
+        </div>
+      </form>
+      </div>
+
+    </div>
+
+    <hr>
+
+  </div> <!-- /container -->
+
+  <div class="container">
+    <div id="wordtree_basic" style="width: 900px; height: 800px;"></div>
+  </div> <!-- /container -->
+
+  <div id="please-wait" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Please wait!</h4>
+        </div>
+        <div class="modal-body">
+          <div class="loading">
+          <p>Fetching your results...</p>
+          <img src="loading-bars.svg">
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="container">
+  <p>Made by Ed!</p>
+</footer>
+</body>
+
+<script>
+
+
+
+(function() {
+  $( "#chooseroot" ).hide();
+  $('#search').val("");
+  var phrases = [];
+  var query_key;
+  var WebEnv;
+
+  $("#runsearch").click(function(){
+     searchstr = $("#search").val();
+     startSearch(searchstr);
+   });
+
+   $("#ownword").click(function(){
+      var myword = $("#customword").val();
+      getDocs( myword );
+    });
+
+   $( "#searchwords" ).on( "click", ".searchword", function() {
+     var myword = $(this).text();
+     getDocs( myword );
+   });
+
+
+
+   function startSearch(term) {
+     $('#returned').empty();
+     $( "#searchwords" ).empty();
+     $( "#wordtree_basic" ).empty();
+     $("#customword").val("");
+     $( "#chooseroot" ).hide();
+
+     esearch(term + "[tiab]")
+     .then(function( data ) {
+       var searchwords = searchstr.split(" ")
+       for (i=0; i<searchwords.length; i++) {
+         $( "#searchwords" ).append("<span class='searchword'>" + searchwords[i] + "</span> ");
+       }
+       query_key = data.esearchresult.querykey;
+       WebEnv = data.esearchresult.webenv;
+       count = data.esearchresult.count;
+       if (count == 0) {
+         alert("Sorry! Nothing found for your search...");
+         location.reload();
+       }
+       $( "#returned" ).append(count);
+       $( "#chooseroot" ).show();
+       //var rootword = $("#search").val();
+       //getDocs( rootword );
+     });
+   }
+
+   function esearch(term) {
+        return $.ajax({
+    url: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi',
+    data: {
+    db: 'pubmed',
+    usehistory: 'y',
+    term: term,
+    sort: 'relevance',
+    retmode: 'json',
+    retmax: 0,
+    email: 'ed_sperr@hotmail.com',
+    tool: 'pmtree'
+    }
+        });
+   }
+
+   function getDocs(rootword) {
+        var doccount = $( "input:checked" ).val();
+        console.log(doccount);
+        var efetchURL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi";
+        phrases.length = 0;
+        $("#please-wait").modal();
+        $.ajax({
+          url: efetchURL,
+          data: {
+            db: 'pubmed',
+            usehistory: 'y',
+            WebEnv: WebEnv,
+            query_key: query_key,
+            retmode: 'xml',
+            rettype: 'abstract',
+            retmax: doccount },
+        })
+        .done(function( xml ) {
+          $(xml).find('PubmedArticle').each(function(){
+              var title = $(this).find("ArticleTitle").text();
+              var abstract = $(this).find("AbstractText").text();
+              var mytext = title + abstract;
+              findMatch(mytext, rootword);
+          });
+          var myword = $("#search").val();
+          if (phrases.length > 0) {
+            drawChart( rootword );
+          } else {
+            alert("Sorry! Can't locate your word in the tree...");
+            location.reload();
+          }
+        });
+   }
+
+   function findMatch( teststring, rootword ) {
+     str1 = "[^\.\!\?]*[\.\!\?]";
+     var re = new RegExp(str1, "gi");
+     var res = teststring.match(re);
+     if ( res ) {
+         for (i=0; i < res.length; i++) {
+         var myphrase = [ res[i] ];
+         var retwo = new RegExp( rootword, "gi");
+         if (retwo.test(myphrase)) {
+           phrases.push(myphrase);
+         }
+       }
+     }
+   }
+
+   google.charts.load('current', {packages:['wordtree']});
+   function drawChart( myword ) {
+      console.log(phrases);
+      var data = google.visualization.arrayToDataTable( phrases );
+      var options = {
+        wordtree: {
+          format: 'implicit',
+          type: 'double',
+          word: myword
+        }
+      };
+
+      var chart = new google.visualization.WordTree(document.getElementById('wordtree_basic'));
+      $('#please-wait').modal('hide');
+      chart.draw(data, options);
+      //var t1 = document.getElementById('wordtree_basic');
+      if (document.getElementById('google-visualization-errors-all-1')) {
+        $('#wordtree_basic').empty();
+        alert("Your word cannot be found! Please choose another...");
+      }
+    }
+
+
+})
+();
+
+
+</script>
+
+
+</html>

@@ -1,0 +1,17 @@
+/*
+#chooseroot {
+  border-radius: .25em;
+  border: 1px solid lightgray;
+  margin-left: 0em;
+  margin-right: 0em;
+}
+*/
+#searchwords {
+  font-family: serif;
+  font-size: 2em;
+  margin-bottom: .5em;
+}
+
+.searchword:hover  {
+  background-color: gold;
+}
