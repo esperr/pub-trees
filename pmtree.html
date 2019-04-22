@@ -27,33 +27,67 @@
   <div class="jumbotron">
     <div class="container">
       <h1 class="display-3">PMTree</h1>
-      <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
     </div>
   </div>
 
 
-  <div class="container">
+  <div class="container" id="mainsearch">
     <!-- Example row of columns -->
-    <div id="mainsearch" class="row">
-      <div class="col-md-8">
+    <div class="row">
+      <div class="col-12">
 
         <h2>Your PubMed search</h2>
         <form class="form-inline">
-        <div class="form-group mb-2">
+        <div class="form-group mb-3">
           <input type="text" class="form-control" id="search">
         </div>
         <!--<button type="submit" class="btn btn-primary mb-2">Search</button>-->
         <button id="runsearch" class="btn btn-primary mb-2" type="button">Search</button>
       </form>
-
+      </div>
+    </div>
+    <div class="row">
+    <div class="col-4">
+      <h4>Visualize your search results!</h4>
+      <p>PMTree enables you to see how the concepts in the documents returned by your PubMed search
+        relate to one another by using the <a href="https://ieeexplore-ieee-org.proxy-remote.galib.uga.edu/stamp/stamp.jsp?tp=&arnumber=4658133&tag=1">Word Tree</a>
+        technique.</p>
+    </div>
+      <div class="col-sm-8">
+      <h4>How it works...</h4>
+      <div class="row">
+      <div class="col-sm-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">1) Search your Terms</h5>
+            <p class="card-text">Use any PubMed search terms you like, from a couple of keywords to tangles of nested parentheses.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">2) Choose your Root</h5>
+            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">3) View your Tree</h5>
+            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          </div>
+        </div>
+      </div>
+      </div>
+      </div>
       </div>
 
+
     </div>
-
     <hr>
-
   </div> <!-- /container -->
-
   <div class="container">
     <!-- Example row of columns -->
     <div id="chooseroot" class="row">
@@ -66,9 +100,8 @@
           <div class="form-group mb-2">
             <input type="text" class="form-control" id="customword">
           </div>
-          <button id="ownword" type="submit" class="btn btn-primary mb-2">Draw</button>
+          <button id="ownword" type="button" class="btn btn-primary mb-2">Draw</button>
         </form>
-
       </div>
 
       <div class="col-md-3">
@@ -125,14 +158,25 @@
 
 <script>
 
-
-
 (function() {
   $( "#chooseroot" ).hide();
   $('#search').val("");
   var phrases = [];
   var query_key;
   var WebEnv;
+
+  $(document).keydown(function(e) {
+    if(e.keyCode == 13) {
+      //Because both IE and FF now "helpfully" ignore the spec and treat 'button' the same as 'submit'
+      e.preventDefault();
+      if($('#mainsearch').is(':visible')){
+        $( "#runsearch" ).trigger( "click" );
+      }
+      if($('#chooseroot').is(':visible')){
+        $( "#ownword" ).trigger( "click" );
+      }
+    }
+  });
 
   $("#runsearch").click(function(){
      searchstr = $("#search").val();
@@ -149,14 +193,12 @@
      getDocs( myword );
    });
 
-
-
    function startSearch(term) {
      $('#returned').empty();
      $( "#searchwords" ).empty();
      $( "#wordtree_basic" ).empty();
      $("#customword").val("");
-     $( "#chooseroot" ).hide();
+     //$( "#chooseroot" ).hide();
 
      esearch(term + "[tiab]")
      .then(function( data ) {
@@ -166,13 +208,16 @@
        }
        query_key = data.esearchresult.querykey;
        WebEnv = data.esearchresult.webenv;
-       count = data.esearchresult.count;
+       count = Number(data.esearchresult.count);
        if (count == 0) {
          alert("Sorry! Nothing found for your search...");
          location.reload();
        }
-       $( "#returned" ).append(count);
+
+       $( "#returned" ).append(count.toLocaleString());
        $( "#chooseroot" ).show();
+       $( "#mainsearch" ).hide();
+
        //var rootword = $("#search").val();
        //getDocs( rootword );
      });
@@ -196,7 +241,6 @@
 
    function getDocs(rootword) {
         var doccount = $( "input:checked" ).val();
-        console.log(doccount);
         var efetchURL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi";
         phrases.length = 0;
         $("#please-wait").modal();
@@ -215,6 +259,7 @@
           $(xml).find('PubmedArticle').each(function(){
               var title = $(this).find("ArticleTitle").text();
               var abstract = $(this).find("AbstractText").text();
+              console.log(abstract);
               var mytext = title + abstract;
               findMatch(mytext, rootword);
           });
@@ -245,7 +290,6 @@
 
    google.charts.load('current', {packages:['wordtree']});
    function drawChart( myword ) {
-      console.log(phrases);
       var data = google.visualization.arrayToDataTable( phrases );
       var options = {
         wordtree: {
@@ -264,8 +308,6 @@
         alert("Your word cannot be found! Please choose another...");
       }
     }
-
-
 })
 ();
 
