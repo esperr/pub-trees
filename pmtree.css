@@ -15,3 +15,13 @@
 .searchword:hover  {
   background-color: gold;
 }
+
+#wordtree_basic {
+  min-width: 600px;
+}
+
+
+#examplechart img {
+    max-width: 50%;
+    height: auto;
+}
