@@ -33,7 +33,7 @@
 
   <div class="container" id="mainsearch">
     <!-- Example row of columns -->
-    <div class="row">
+    <!--<div class="row">
       <div class="col-12">
 
         <h2>Your PubMed search</h2>
@@ -41,42 +41,68 @@
         <div class="form-group mb-3">
           <input type="text" class="form-control" id="search">
         </div>
-        <!--<button type="submit" class="btn btn-primary mb-2">Search</button>-->
         <button id="runsearch" class="btn btn-primary mb-2" type="button">Search</button>
       </form>
       </div>
-    </div>
+    </div>-->
+
     <div class="row">
-    <div class="col-4">
+    <div class="col-5">
+      <h3>Your PubMed search:</h3>
+
+      <div id="searchwords"></div>
+        <form class="form-inline">
+        <div class="form-group mb-2">
+          <input type="text" class="form-control" id="search">
+        </div>
+        <button id="runsearch" type="button" class="btn btn-primary mb-2">Search</button>
+      </form>
+
+    </div>
+    <div class="col-6" id="examplechart">
       <h4>Visualize your search results!</h4>
       <p>PMTree enables you to see how the concepts in the documents returned by your PubMed search
         relate to one another by using the <a href="https://ieeexplore-ieee-org.proxy-remote.galib.uga.edu/stamp/stamp.jsp?tp=&arnumber=4658133&tag=1">Word Tree</a>
-        technique.</p>
+        technique.
+    </p>
+    <img src="PubMed.PNG" alt="Example of a PubTrees chart" />
     </div>
-      <div class="col-sm-8">
+    </div>
+
+    <div class="row">
+      <div class="col-md-8">
+
+      </div>
+      </div>
+
+    <div class="row">
+      <div class="col-md-10">
       <h4>How it works...</h4>
       <div class="row">
-      <div class="col-sm-4">
+      <div class="col-md-4">
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">1) Search your Terms</h5>
-            <p class="card-text">Use any PubMed search terms you like, from a couple of keywords to tangles of nested parentheses.</p>
+            <p class="card-text">Search with any PubMed search terms you like. You can use anything from a couple of keywords to the most complex search you can manage.</p>
           </div>
         </div>
       </div>
-      <div class="col-sm-4">
+      <div class="col-md-4">
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">2) Choose your Root</h5>
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+            <p class="card-text">Select one of your search terms (or choose any other word) to serve as the "root" of your tree. This term
+            will be at the center of your diagram.</p>
           </div>
         </div>
       </div>
-      <div class="col-sm-4">
+      <div class="col-md-4">
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">3) View your Tree</h5>
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+            <p class="card-text">Other words and phrases from the citations captured by your search will be graphed in
+            relation to the root of your tree. You can keep redrawing the graph by either changing the number of citations that are
+          graphed or by selecting a different root. You can also <em>interact</em> with the tree by selecting individual terms.</p>
           </div>
         </div>
       </div>
@@ -88,9 +114,9 @@
     </div>
     <hr>
   </div> <!-- /container -->
-  <div class="container">
+  <div id="chooseroot" class="container">
     <!-- Example row of columns -->
-    <div id="chooseroot" class="row">
+    <div class="row">
       <div class="col-md-8">
         <p>Your search returned <span id="returned"></span> PubMed results</p>
         <p>Select one of your search terms to see it as root...</p>
@@ -129,9 +155,6 @@
 
   </div> <!-- /container -->
 
-  <div class="container">
-    <div id="wordtree_basic" style="width: 900px; height: 800px;"></div>
-  </div> <!-- /container -->
 
   <div id="please-wait" class="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
@@ -194,10 +217,10 @@
    });
 
    function startSearch(term) {
-     $('#returned').empty();
-     $( "#searchwords" ).empty();
-     $( "#wordtree_basic" ).empty();
-     $("#customword").val("");
+     //$('#returned').empty();
+     //$( "#searchwords" ).empty();
+     //$( "#wordtree_basic" ).empty();
+     //$("#customword").val("");
      //$( "#chooseroot" ).hide();
 
      esearch(term + "[tiab]")
@@ -217,6 +240,17 @@
        $( "#returned" ).append(count.toLocaleString());
        $( "#chooseroot" ).show();
        $( "#mainsearch" ).hide();
+       $( "#chooseroot" ).after('<div class="container" id="wordtree_basic">');
+       var divWidth = $( "#chooseroot" ).innerWidth();
+       console.log(divWidth);
+       var chartwidth = divWidth*.9;
+       var chartheight = chartwidth*.8;
+       //if (chartwidth < 500) {
+      //   alert("Minimum!");
+      //   $( "#chooseroot" ).attr( "style", 'style="width: 700px; height: 560px;"' );
+       //} else {
+      //    $( "#chooseroot" ).attr( "style", 'style="width: ' + chartwidth + '; px; height: ' + chartheight + ' px;"' );
+       //}
 
        //var rootword = $("#search").val();
        //getDocs( rootword );
