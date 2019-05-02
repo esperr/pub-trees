@@ -57,6 +57,28 @@
         </div>
         <button id="runsearch" type="button" class="btn btn-primary mb-2">Search</button>
       </form>
+      <form>
+        <p>Search your term in:</p>
+        <div>
+          <input type="radio" id="type1"
+           name="searchtype" value="tiab" checked>
+          <label for="type1">Title and abstract</label>
+
+          <input type="radio" id="type2"
+           name="searchtype" value="any">
+          <label for="type2">Anywhere</label>
+        </div>
+        <p>Dates to search:</p>
+        <div>
+          <input type="radio" id="years1"
+           name="searchyears" value="ten" checked>
+          <label for="years1">Last 10 years</label>
+
+          <input type="radio" id="years2"
+           name="searchyears" value="all">
+          <label for="years2">All</label>
+        </div>
+      </form>
 
     </div>
     <div class="col-6" id="examplechart">
@@ -121,6 +143,7 @@
         <p>Your search returned <span id="returned"></span> PubMed results</p>
         <p>Select one of your search terms to see it as root...</p>
         <div id="searchwords"></div>
+        <div id="rootwords"></div>
           <p>or choose your own different word:</p>
           <form class="form-inline">
           <div class="form-group mb-2">
@@ -135,15 +158,15 @@
         <p>Draw your tree with how many results?</p>
         <div>
           <input type="radio" id="Choice1"
-           name="contact" value="50">
+           name="howmany" value="50">
           <label for="Choice1">50</label>
 
           <input type="radio" id="Choice2"
-           name="contact" value="100" checked>
+           name="howmany" value="100" checked>
           <label for="Choice2">100</label>
 
           <input type="radio" id="Choice3"
-           name="contact" value="150">
+           name="howmany" value="150">
           <label for="Choice3">150</label>
         </div>
       </form>
@@ -182,6 +205,12 @@
 <script>
 
 (function() {
+  var current_datetime = new Date();
+  var tenyearsago = new Date();
+  tenyearsago.setFullYear(tenyearsago.getFullYear() - 10);
+  var formatted_date = current_datetime.getFullYear() + "/" + (current_datetime.getMonth() + 1) + "/" + current_datetime.getDate();
+  var formatted_old_date = tenyearsago.getFullYear() + "/" + (tenyearsago.getMonth() + 1) + "/" + tenyearsago.getDate();
+  console.log(formatted_old_date);
   $( "#chooseroot" ).hide();
   $('#search').val("");
   var phrases = [];
@@ -211,23 +240,30 @@
       getDocs( myword );
     });
 
-   $( "#searchwords" ).on( "click", ".searchword", function() {
+   $( "#rootwords" ).on( "click", ".searchword", function() {
      var myword = $(this).text();
      getDocs( myword );
    });
 
    function startSearch(term) {
-     //$('#returned').empty();
-     //$( "#searchwords" ).empty();
-     //$( "#wordtree_basic" ).empty();
-     //$("#customword").val("");
+     $('#returned').empty();
+     $( "#searchwords" ).empty();
+     $( "#wordtree_basic" ).empty();
+     $("#customword").val("");
      //$( "#chooseroot" ).hide();
+     if ($( "input[name='searchtype']:checked" ).val() == "tiab") {
+       term = term + "[tiab]";
+     }
+     if ($( "input[name='searchyears']:checked" ).val() == "ten") {
+       term = term +' AND ("' + formatted_old_date + '"[PDAT] : "' + formatted_date + '"[PDAT])';
+     }
 
-     esearch(term + "[tiab]")
+     esearch(term)
      .then(function( data ) {
        var searchwords = searchstr.split(" ")
        for (i=0; i<searchwords.length; i++) {
-         $( "#searchwords" ).append("<span class='searchword'>" + searchwords[i] + "</span> ");
+         console.log(searchwords[i]);
+         $( "#rootwords" ).append("<span class='searchword'>" + searchwords[i] + "</span>");
        }
        query_key = data.esearchresult.querykey;
        WebEnv = data.esearchresult.webenv;
@@ -274,7 +310,7 @@
    }
 
    function getDocs(rootword) {
-        var doccount = $( "input:checked" ).val();
+        var doccount = $( "input[name='howmany']:checked" ).val();
         var efetchURL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi";
         phrases.length = 0;
         $("#please-wait").modal();
