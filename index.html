@@ -1,9 +1,19 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-433406-15"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-433406-15');
+    </script>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>PMTree</title>
+    <title>PubTrees</title>
     <!-- Bootstrap core CSS -->
     <link href="https://getbootstrap.com/docs/4.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="pmtree.css">
@@ -16,17 +26,17 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <a class="navbar-brand" href="#">PMTree</a>
+        <a class="navbar-brand" href="">PubTrees</a>
         <div class="navbar-nav ml-auto">
-          <a class="nav-item nav-link active" href="#">About PMTree</a>
+          <a class="nav-item nav-link active" href="about.html">About PubTrees</a>
         </div>
       </nav>
 
 <main role="main">
   <!-- Main jumbotron for a primary marketing message or call to action -->
-  <div class="jumbotron">
+  <div id="topbanner" class="jumbotron">
     <div class="container">
-      <h1 class="display-3">PMTree</h1>
+      <h1 class="display-3">PubTrees</h1>
     </div>
   </div>
 
@@ -53,39 +63,51 @@
       <div id="searchwords"></div>
         <form class="form-inline">
         <div class="form-group mb-2">
-          <input type="text" class="form-control" id="search">
+          <input type="text" class="form-control" id="search" size="30">
         </div>
         <button id="runsearch" type="button" class="btn btn-primary mb-2">Search</button>
       </form>
-      <form>
-        <p>Search your term in:</p>
-        <div>
-          <input type="radio" id="type1"
-           name="searchtype" value="tiab" checked>
-          <label for="type1">Title and abstract</label>
-
-          <input type="radio" id="type2"
-           name="searchtype" value="any">
-          <label for="type2">Anywhere</label>
+      <form class="searchoptions">
+        <p class="optionlabel">Search term(s) in:</p>
+        <div class="custom-control custom-radio custom-control-inline searchoption">
+          <input type="radio" class="custom-control-input" id="type1" name="searchtype" value="tiab" checked>
+          <label class="custom-control-label" for="type1">Title and abstract</label>
         </div>
-        <p>Dates to search:</p>
-        <div>
-          <input type="radio" id="years1"
-           name="searchyears" value="ten" checked>
-          <label for="years1">Last 10 years</label>
 
-          <input type="radio" id="years2"
-           name="searchyears" value="all">
-          <label for="years2">All</label>
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio" class="custom-control-input" id="type2" name="searchtype" value="any">
+          <label class="custom-control-label" for="type2">Anywhere</label>
         </div>
+        <p class="optionlabel">Dates to search:</p>
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio" class="custom-control-input" id="years1" name="searchyears" value="ten" checked>
+          <label class="custom-control-label" for="years1">Last 10 years</label>
+        </div>
+
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio" class="custom-control-input" id="years2" name="searchyears" value="all">
+          <label class="custom-control-label" for="years2">All</label>
+        </div>
+
+        <p class="optionlabel">Graph results:</p>
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio" class="custom-control-input" id="sort1" name="searchsort" value="relevance" checked>
+          <label class="custom-control-label" for="sort1">Most relevant</label>
+        </div>
+
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio" class="custom-control-input" id="sort2" name="searchsort" value="date">
+          <label class="custom-control-label" for="sort2">Most recent</label>
+        </div>
+
       </form>
 
     </div>
     <div class="col-6" id="examplechart">
       <h4>Visualize your search results!</h4>
-      <p>PMTree enables you to see how the concepts in the documents returned by your PubMed search
-        relate to one another by using the <a href="https://ieeexplore-ieee-org.proxy-remote.galib.uga.edu/stamp/stamp.jsp?tp=&arnumber=4658133&tag=1">Word Tree</a>
-        technique.
+      <p>PubTrees enables you to explore the concepts in the documents returned by your PubMed search
+        by using the <a href="http://hint.fm/papers/wordtree_final2.pdf">Word Tree</a>
+        technique. <a href="about.html"><em>(more...)</em></a>
     </p>
     <img src="PubMed.PNG" alt="Example of a PubTrees chart" />
     </div>
@@ -122,7 +144,7 @@
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">3) View your Tree</h5>
-            <p class="card-text">Other words and phrases from the citations captured by your search will be graphed in
+            <p class="card-text">Other words and phrases from the citations found will be graphed in
             relation to the root of your tree. You can keep redrawing the graph by either changing the number of citations that are
           graphed or by selecting a different root. You can also <em>interact</em> with the tree by selecting individual terms.</p>
           </div>
@@ -139,7 +161,7 @@
   <div id="chooseroot" class="container">
     <!-- Example row of columns -->
     <div class="row">
-      <div class="col-md-8">
+      <div class="col-md-5">
         <p>Your search returned <span id="returned"></span> PubMed results</p>
         <p>Select one of your search terms to see it as root...</p>
         <div id="searchwords"></div>
@@ -147,29 +169,43 @@
           <p>or choose your own different word:</p>
           <form class="form-inline">
           <div class="form-group mb-2">
-            <input type="text" class="form-control" id="customword">
+            <input type="text" class="form-control" id="customword" size="10">
           </div>
           <button id="ownword" type="button" class="btn btn-primary mb-2">Draw</button>
         </form>
       </div>
 
       <div class="col-md-3">
-      <form>
+      <form class="searchoptions">
         <p>Draw your tree with how many results?</p>
         <div>
-          <input type="radio" id="Choice1"
-           name="howmany" value="50">
-          <label for="Choice1">50</label>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" class="custom-control-input" id="results1" name="howmany" value="50">
+            <label class="custom-control-label" for="results1">50</label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" class="custom-control-input" id="results2" name="howmany" value="100" checked>
+            <label class="custom-control-label" for="results2">100</label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" class="custom-control-input" id="results3" name="howmany" value="150">
+            <label class="custom-control-label" for="results3">150</label>
+          </div>
 
-          <input type="radio" id="Choice2"
+          <!--<input type="radio" id="results1"
+           name="howmany" value="50">
+          <label for="results1">50</label>
+
+          <input type="radio" id="results1"
            name="howmany" value="100" checked>
           <label for="Choice2">100</label>
 
           <input type="radio" id="Choice3"
            name="howmany" value="150">
-          <label for="Choice3">150</label>
+          <label for="Choice3">150</label>-->
         </div>
       </form>
+      <button id="reset" type="button" class="btn btn-outline-danger">Try another search</button>
       </div>
 
     </div>
@@ -198,8 +234,9 @@
 </main>
 
 <footer class="container">
-  <p>Made by Ed!</p>
-</footer>
+  <span class="text-muted">Design and contruction by <a href="https://esperr.github.io/about/">Ed Sperr, M.L.I.S.</a>  |
+    Data from <a href="http://www.ncbi.nlm.nih.gov/">NCBI</a>  |   Visualization tools from  <a href="https://developers.google.com/chart/interactive/docs/gallery/wordtree" target="_blank">Google</a>
+   | See the code at <a href="https://github.com/esperr/pub-trees">GitHub</a></span></footer>
 </body>
 
 <script>
@@ -210,7 +247,6 @@
   tenyearsago.setFullYear(tenyearsago.getFullYear() - 10);
   var formatted_date = current_datetime.getFullYear() + "/" + (current_datetime.getMonth() + 1) + "/" + current_datetime.getDate();
   var formatted_old_date = tenyearsago.getFullYear() + "/" + (tenyearsago.getMonth() + 1) + "/" + tenyearsago.getDate();
-  console.log(formatted_old_date);
   $( "#chooseroot" ).hide();
   $('#search').val("");
   var phrases = [];
@@ -237,13 +273,23 @@
 
    $("#ownword").click(function(){
       var myword = $("#customword").val();
-      getDocs( myword );
+      var spacetest = myword.indexOf(' ');
+      if (spacetest > -1) {
+        alert("Sorry, you can only use one word as your root!");
+        $("#customword").val("");
+      } else {
+        getDocs( myword );
+      }
     });
 
    $( "#rootwords" ).on( "click", ".searchword", function() {
      var myword = $(this).text();
      getDocs( myword );
    });
+
+   $( ".row" ).on( "click", "#reset", function() {
+       location.replace(location.pathname);
+    });
 
    function startSearch(term) {
      $('#returned').empty();
@@ -257,13 +303,17 @@
      if ($( "input[name='searchyears']:checked" ).val() == "ten") {
        term = term +' AND ("' + formatted_old_date + '"[PDAT] : "' + formatted_date + '"[PDAT])';
      }
+     if ($( "input[name='searchsort']:checked" ).val() == "relevance") {
+       var sort = "relevance";
+     } else {
+       var sort = "most+recent";
+     }
 
-     esearch(term)
+     esearch(term, sort)
      .then(function( data ) {
        var searchwords = searchstr.split(" ")
        for (i=0; i<searchwords.length; i++) {
-         console.log(searchwords[i]);
-         $( "#rootwords" ).append("<span class='searchword'>" + searchwords[i] + "</span>");
+         $( "#rootwords" ).append(" <span class='searchword'>" + searchwords[i] + "</span>");
        }
        query_key = data.esearchresult.querykey;
        WebEnv = data.esearchresult.webenv;
@@ -278,7 +328,6 @@
        $( "#mainsearch" ).hide();
        $( "#chooseroot" ).after('<div class="container" id="wordtree_basic">');
        var divWidth = $( "#chooseroot" ).innerWidth();
-       console.log(divWidth);
        var chartwidth = divWidth*.9;
        var chartheight = chartwidth*.8;
        //if (chartwidth < 500) {
@@ -293,18 +342,18 @@
      });
    }
 
-   function esearch(term) {
+   function esearch(term, sort) {
         return $.ajax({
     url: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi',
     data: {
     db: 'pubmed',
     usehistory: 'y',
     term: term,
-    sort: 'relevance',
+    sort: sort,
     retmode: 'json',
     retmax: 0,
     email: 'ed_sperr@hotmail.com',
-    tool: 'pmtree'
+    tool: 'PubTrees'
     }
         });
    }
@@ -329,7 +378,6 @@
           $(xml).find('PubmedArticle').each(function(){
               var title = $(this).find("ArticleTitle").text();
               var abstract = $(this).find("AbstractText").text();
-              console.log(abstract);
               var mytext = title + abstract;
               findMatch(mytext, rootword);
           });
@@ -372,6 +420,8 @@
       var chart = new google.visualization.WordTree(document.getElementById('wordtree_basic'));
       $('#please-wait').modal('hide');
       chart.draw(data, options);
+      var element = document.getElementById("wordtree_basic");
+      element.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
       //var t1 = document.getElementById('wordtree_basic');
       if (document.getElementById('google-visualization-errors-all-1')) {
         $('#wordtree_basic').empty();

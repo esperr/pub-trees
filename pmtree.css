@@ -6,6 +6,13 @@
   margin-right: 0em;
 }
 */
+
+#topbanner {
+  background-color: #ed9415;
+  padding-top: 5em;
+  padding-bottom: 1em;
+  }
+
 #rootwords {
   font-family: serif;
   font-size: 2em;
@@ -20,8 +27,28 @@
   min-width: 600px;
 }
 
+.searchoptions {
+  font-size: .9em;
+  width: 80%;
+  border: 1px dotted grey;
+  border-radius: 10px;
+  padding: 1em;
+}
+
+.optionlabel {
+  margin-bottom: 0em;
+  font-weight: bold;
+}
 
 #examplechart img {
     max-width: 50%;
     height: auto;
+}
+
+.card-title {
+  font-weight: bold;
+}
+
+#reset {
+  margin-top: 2em;
 }
